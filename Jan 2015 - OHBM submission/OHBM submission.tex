@@ -1,0 +1,203 @@
+\documentclass[9pt,journal]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{anysize}
+\usepackage{multirow}
+\usepackage{sidecap}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{comment}
+\usepackage{fancyref} 
+\usepackage{pdflscape}
+\usepackage{geometry}
+\usepackage{epstopdf}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{mdwmath}
+\usepackage{mdwtab}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{bbm}
+\usepackage{stfloats}
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\pagenumbering{arabic}
+\numberwithin{equation}{section}
+\def\law{\,{\buildrel d \over \longrightarrow}\,} 
+\def\almostsurely{\,{\buildrel a.s. \over \longrightarrow}\,} 
+\marginsize{1.5cm}{1.5cm}{0.1cm}{1cm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{Assumptions}[theorem]{Assumptions}
+\newtheorem{Definition}[theorem]{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{Lemma}[theorem]{Lemma}
+\newlength{\drop} \drop=0.1\textheight
+\newcommand\tr{\normalfont \text{tr}\,}
+\newcommand\deter{\mbox{det}\,}
+\newcommand\diag{\mbox{diag}\,}
+\newcommand\cov{\mbox{cov}\,}
+\newcommand\invcov{\mbox{invcov}\,}
+\newcommand\argmin{\normalfont \mbox{argmin}\,}
+\newcommand{\defeq}{\mathrel{\mathop:}=}
+\newcommand\fnyq{f_N}
+\renewcommand\abstractname{Summary}
+\linespread{1.3}
+\begin{document}
+\title{Smoothing span selection for the multitaper spectral estimate in the analysis of EEG data}
+\author{Deborah Schneider-Luftman, \IEEEmembership{not in IEEE yet}
+\thanks{ Department of Mathematics, Imperial College London.}}
+\markboth{OHBM submission, ~2015}%
+{ }
+\maketitle
+
+\section{introduction}
+In the recording  Electroencephalograms (EEG), neurological signals are simultaneously
+obtained from different regions of the brain and give rise to data in the form of a multivariate
+time series. In this context, it is particularly relevant to analyze this data in the frequency domain, rather than the time domain. Meaningful results can be extracted from the Spectral density function (SDF) matrix of the data, which can be viewed as the complex-valued covariance matrix of the Fourier-transformed data.\\
+The aim is to retrieve the spectral matrix, at all frequencies, for each patient in order to highlight differences between positive and negative syndrome patients, using the control individuals as benchmarks. The multitaper estimate is a strong candidate for the estimation of this quantity.  Not only does it have good bias and variance properties in finite samples, it is also very effective in controlling spectral leakage \cite{Percival1993}. \\
+Much like in the smoothed peridogram, the number of tapers $K$ used in its constructions acts as a smoothing span. Thus it must be carefully selected, and reflect a balance between bias/variance reduction and good spectral resolution.\\
+While there exists many smoothing span selection schemes for the smoothed periodogram, little research has been done in the case of the multitaper estimate, in spite of its potential for application to analysis of neurological data.\\
+In this paper we propose data-driven schemes that select a value for $K$ that optimizes specific target criteria discussed in \fref{sec:methods}. The schemes are then applied, first to data simulated from a VAR(1) model, then to the data sampled from the patients of all three groups in \fref{sec:results}.
+
+
+\section{Methods}
+\label{sec:methods}
+\begin{figure*}[!b]
+\hrulefill
+\vspace*{2pt}
+\setcounter{section}{2}
+\setcounter{equation}{5}
+\begin{align}
+L(\bold S | \hat{\bold S}^{mt}_K) &= \frac{1}{2\fnyq} \int^{\fnyq}_0 \log(|\bold S(f)|)+\tr[\bold S^{-1}(f)\hat{\bold S}^{mt}_K(f)] df\label{eq:gammaXvalid}\\
+\hat{L}(\bold S | \hat{\bold S}^{mt}_K) &= \frac{1}{2\fnyq} \sum^{N_{freq}-1}_{j=0} \log(|\bold S(f_j)|)+\tr[\bold S^{-1}(f_j)\hat{\bold S}^{mt}_K(f_j)] \label{eq:gammaXapprox}
+\end{align}
+\setcounter{section}{2}
+\setcounter{equation}{0}
+\end{figure*}
+\subsection*{EEG data set}
+The data set is the same as the one discussed in \cite{Medkour2010}: EEG are taken from 34 mental health patients (all male, aged between 20 and 60 years) from the Serbsky Institute in Moscow.  Of these patients, 15 were diagnosed with positive syndrome schizophrenia, 19 were diagnosed with negative syndrome schizophrenia. In addition to this, a control group of 24 healthy subjects of similar age to the patients is introduced to the study. We denote the positive syndrome group as "Positive", the negative syndrome group as "Negative" and the control group as "Control".\\
+The EEGs are recorded at a sampling rate of 100Hz ($\Delta t = 0.01$s, Nyquist frequency $f_N = \frac{1}{2\Delta t} = 50$Hz) from $p=10$ scalp sites, named F3, F4, C3, C4, T3, T4, P3, P4, O1 and O2. The raw signals are then put thought a 6Hz Butterworth filter with bandpass 0.5-45 Hz, and subsequently down-sampled by a factor of 5. The resulting signal  is a multivariate time series $\{ X_{j,t}\}$ with dimension $p=10$ where
+ $j=1,...,10$ represents the re-labeling each scalp site:
+\begin{table}[H]
+\centering
+\begin{tabular}{cccccccccc}
+\hline
+1&2&3&4&5&6&7&8&9&10\\
+\hline
+ F3& F4&C3& C4&T3 &T4& P3&P4& O1&O2\\
+\hline
+\end{tabular}
+\end{table}
+\subsection*{Spectral matrix estimation}
+In this context we work with the spectral matrix ${\bold S}(f)$ of the multivariate time series $\{X_{i,t}\}$, $i\leq p$, $t\in [0,N-1]$, where each $p$-dimensional vector ${\bold X}_t$ is viewed as a zero-mean and strongly stationary processes $X_{m,t}$, $\forall m \leq p$. The true spectral matrix ${\bold S}(f)=\{S(f)_{lm}\}^p_{l,m=1}$ is given by:
+\[S(f) _{lm}= \Delta t \sum^{+\infty}_{\tau = -\infty} s(\tau)_{lm}e^{-i2\pi f \tau \Delta t}\]
+for each frequency $f \in [-f_N,f_N]$, $f_N$ being the Nyquist frequency $f_N=\frac{1}{2\Delta t}$ and $\Delta t$ the sample time interval. The term:
+\begin{equation*}
+\forall t \leq T \text{, }s(\tau) _{lm}= \mathbb{E}(X_{l,t+\tau}X_{m,t}) 
+\end{equation*}
+ is the cross-covariance between the processes ${\bold X}_l$ and ${\bold X}_m$ $ \in \{{\bold X}_i\}^{N-1}_i$, ${\bold X}_i \in \mathbb{R}^p$.  $\forall i \leq N-1 $.\\
+The matrix $\bold S(f)$ is traditionally estimated via the Periodogram:
+\begin{align*} {\bold J}(f) &= \frac{\Delta t^{-1/2}}{\sqrt{N}} \sum^{N-1}_{t=0} {\bold X}_t e^{-i2\pi ft \Delta t} \in \mathbb{C}^p, \\
+\hat{\bold S }(f) &= {\bold J}(f){\bold J }(f)^H \in \mathbb{C}^{p\times p}.\end{align*}
+This estimator however is known to be biased asymptotically and to have stability and inversion issues. Instead, we use an alternative estimation procedure, similar to the smoothed periodogram, called the multitaper spectral estimate \cite{Percival1993}.\\
+ We start with tapers $\{h_{k,t} | t=0,...,N-1\}$ for $k=0,...,K-1$,where $h_{k,t}$, constants in $\mathbb{R}$ and orthogonal, displayed below (\cite{Medkour2010}):
+\begin{equation}
+ \sum_t h_{j,t}h_{k,t} = \left\{ \begin{array}{cc}1 & \mbox{ if } j=k, \\ 0 & \mbox{ otherwise} \end{array} \right.
+\label{eq:tapers}
+\end{equation}
+We introduce a Fourier transform on $\bold X$:
+\begin{equation}
+{\bold J}_k(f) = \Delta t^{-1/2} \sum_t h_{k,t}{\bold X}_te^{-i2\pi ft \Delta t} \in \mathbb{C}^p.
+\label{eq:multitaperdef}
+\end{equation}
+From this we can create a multitaper estimate for $\bold S(f)$:
+\begin{equation}
+ \hat{\bold S}^{(mt)}(f) = \frac{1}{K} \sum^{K-1}_{k=0}\bold J_k(f)\bold J^H_k(f) \in \mathbb{C}^{p\times p}\label{eq:MTdefinition}
+\end{equation}
+There are several types of tapers $\{h_{k,t}\}$ that satisfy the relation in \fref{eq:tapers} (\cite{Percival1993}), the most widely used ones being the Slepian tapers \cite{Slepian1978} and the Sine tapers \cite{Riedel1995}. Using these, we can create the estimator in \fref{eq:MTdefinition}  and obtain strong bias, variance properties, as well as reduced broadband bias \cite{Babadi2014}.
+\subsection*{Number of tapers $K$ as a design parameter}
+To maximise the beneficial properties of the estimator in \fref{eq:MTdefinition}, the number of tapers $K$ used in its construction must be carefully selected. The bias and variance of $\hat{\bold S}^{(mt)}(f)$ are inversely related to $K$ for all frequencies $f \in (0,\fnyq)$
+\begin{align*}
+\mathbb{V}(\hat{\bold S}^{(mt)}(f)) &= \bold S(f)^2 /K\\
+\mathbb{E}(\hat{\bold S}^{(mt)}(f)) &\simeq   \bold S(f) + \mathcal{O}(1/K)
+\end{align*}
+Hence, it is best to set $K$ to be relatively large. However, $K$ cannot be set arbitrarily large, as it is directly related to the bandwidth of the resulting estimator $\hat{\bold S}^{(mt)}(f))$. Denote $W$ the desired half-bandwidth, and $B$ the effective bandwidth \cite{Walden1995}:
+\begin{align*}
+\text{Slepian tapers: } &K << 2W -1 \text{, } B = 2W\\
+ \text{Sine tapers: } &B = \frac{K+1}{(N+1)}
+\end{align*}
+The bandwidth $B$ of the estimate $\hat{\bold S}^{(mt)}(f)$ directly impacts its quality: with a bandwidth $B$ set too high, much of the information in the initial time series data is lost in the frequency domain.\\
+{\color{red} In all the existing literature on multitaper spectral analysis}, the effective bandwidth $B$ is controlled by the desired bandwidth $W$, which is input at the start as a design parameter. So far, there is no specific indication on how $W$ - and therefore $K$ - should be set.\\
+ We thus need to formulate a selection procedure that aims to select a number of taper $K$ such that the resulting estimator $\hat{\bold S}^{(mt)}$ has as little bias and variance as possible, while not setting $B$ too high. 
+\subsection*{Selection criteria}
+A natural approach to is to extend the results previously developed for the selection of the smoothing span in the smoothed periodogram. The method exposed in \cite{C.M.Lee2001} aims to minimise the Mean Integrated squared Error (MISE) of $\hat{\bold S}^{(mt)}_K$ in HS norm
+\begin{align*}
+K^* &= \underset{K}{\argmin} \mathcal{MISE}_{HS}(\hat{\bold S}^{(mt)}_K,\bold S)\\
+&= \underset{K}{\argmin} \int^{\fnyq}_0 \mathcal{R}_{HS}(\hat{\bold S}^{(mt)}_K(f),\bold S(f))df\\
+&= \underset{K}{\argmin} \mathbb{E}\left(\int^{\fnyq}_0 \tr[\hat{\bold S}^{(mt)}_K(f)-\bold S(f)]^2 df\right) \\
+&\simeq \underset{K}{\argmin} \sum^{N_{freq}-1}_{j=0}\mathbb{E}\left( \tr[\hat{\bold S}^{(mt)}_K(f_j)-\bold S(f_j)]^2 \right)
+\end{align*}
+The last line represents a Trapezoidal scheme approximating $\mathcal{MISE}_{HS}(\hat{\bold S}^{(mt)}_K,\bold S)$ over a finite set of frequencies, where $N_{freq}$ is the number of discretized frequencies within $(0,\fnyq)$, typically,
+\begin{equation*}
+N_{freq} = N+1 
+\end{equation*}
+But in the context of data analysis, the quantity $\bold S(.)$  is unknown. Thus, we need to redevelop this methodology for it work solely with available data. This can be easily achieve by exploiting the independence structure of the sub-vectors $\bold J_k(f)$, with a leave-one-out cross validation \cite{Walden}, \cite{Fiecas2011}:
+\begin{align}
+\hat{\bold S}^{(mt)}_{\backslash k}(f) &=  \frac{1}{K} \sum^{K-1}_{\underset{u\neq k}{u=0}}\bold J_u(f)\bold J^H_u(f), \nonumber\\
+\hat{\mathcal{R}}_{HS}(\hat{\bold S}^{(mt)}_K(f),\bold S(f)) &=\sum^{K-1}_{k=0} \tr[\hat{\bold S}^{(mt)}_{\backslash k}(f_j)-\bold J_k(f_j)\bold J^H_k(f_j)]^2, \nonumber\\
+\widehat{\mathcal{MISE}_{HS}}(\hat{\bold S}^{(mt)}_K,\bold S) &= \sum^{N_{freq}-1}_{j=0} \hat{\mathcal{R}}_{HS}(\hat{\bold S}^{(mt)}_K(f_j),\bold S(f_j)), \nonumber \\
+\hat{K}^* &= \underset{K}{\argmin} \widehat{\mathcal{MISE}_{HS}}(\hat{\bold S}^{(mt)}_K,\bold S) \label{eq:procedure1}
+\end{align}
+ Note how perfectly the multitaper estimate lends itself to this methodology. \\
+It is a fact that \cite{Chen2010},\cite{Walden}, for all $f \in (0,\fnyq)$,
+\begin{equation*}
+\left|\hat{\mathcal{R}}_{HS}(\hat{\bold S}^{(mt)}_K(f),\bold S(f)) - \mathcal{R}_{HS}(\hat{\bold S}^{(mt)}_K(f),\bold S(f))\right| \rightarrow 0 \text{, } N \rightarrow +\infty.
+\end{equation*}
+Then, given the asymptotic properties of the trapezoidal scheme, it follows that
+\begin{equation*}
+\left|\widehat{\mathcal{MISE}_{HS}}(\hat{\bold S}^{(mt)}_K,\bold S)  - \mathcal{MISE}_{HS}(\hat{\bold S}^{(mt)}_K,\bold S) \right| \rightarrow 0 \text{, } N \rightarrow +\infty.
+\end{equation*}
+Hence, $\hat{K}^*$ is a strong estimator for $K^*$, but it may not necessarily be the best smoothing span for the multitatper estimator.
+\\
+An alternative is to use the multivariate Whittle likelihood \cite{Dahlhaus2000} (see \fref{eq:gammaXvalid}), and create a minimization scheme for the multitaper estimate that is similar to the one exposed in \cite{Ombao2001}:
+\begin{align}
+K_L &= \underset{K}{\argmin} L(\bold S | \hat{\bold S}^{mt}_K) \nonumber \\
+\hat{K}_L &= \underset{K}{\argmin} \hat{L}(\hat{\bold S} | \hat{\bold S}^{mt}_K) \label{eq:procedure2}
+\end{align}
+with $\hat{L}(.|.)$ defined in \fref{eq:gammaXapprox} and $\hat{\bold S}$ represents a plug-in estimator. Following the guideline set in \cite{C.M.Lee2001}, we can set $\hat{\bold S} = \hat{\bold S}^{(mt)}_{K_h}$, where $K_h$ is a pilot parameter, conveniently set as $K_h = \hat{K}^*$ from \fref{eq:procedure1}.
+\begin{remark}
+If  $p>K_h$ $\hat{\bold S}^{(mt)}_{K_h}$ is singular. In that case, \fref{eq:gammaXapprox} cannot be computed. Instead, we could use a regularised version of $\hat{\bold S}^{(mt)}_{K_h}$, shrinkage being one of the optimal options for its computational ease \cite{Walden}.
+\end{remark}
+\setcounter{section}{2}
+\setcounter{equation}{7}
+Another possibility  consists of estimating the bandwidth $B_T$ of the time series data and adapt the number of tapers $K$ around it. For each variable $i \leq p$, $B_{T,i}$ ca be estimated with a scheme exposed in \cite{Walden1990}:
+\begin{align}
+\hat{B}_{T,i} &= \frac{\hat{s}^2_{i,0}}{2\Delta_t \sum^{N-1}_{\tau=-(N-1)} (1-\frac{|\tau|}{N})\hat{s}^2_{i,\tau}}, \nonumber\\
+\tilde{B}_{T,i} &= \frac{5}{3}\hat{B}_T-\frac{1}{N\Delta_t} \label{eq:debiasedBT},
+\end{align}
+where $\hat{s}^2_{i,\tau}$ - for $\tau \in [-(N-1),N-1]$ - represent the auto and cross covariance terms
+\begin{equation*}
+\hat{s}^2_{i,\tau} = \frac{1}{N}\sum^N_j  X_{i,t} X^T_{i,t+|\tau|}
+\end{equation*}
+Working with uni-dimensional data ($p = 1$), the approach of \cite{Rosado-Mendez2013} uses $\tilde{B}_T$ to evaluate $K$ when using Slepian tapers:
+\begin{tcolorbox}
+\begin{enumerate}
+\item Compute $\tilde{B}_T$ from the data $\{\bold X_t\}$ using \fref{eq:debiasedBT},
+\item Set the design parameter $W$ as $W = \frac{\tilde B_T}{\alpha}$, $\alpha \in 2^{\mathbb{R}}$,
+\item $K = 2NW-1$.
+\end{enumerate}
+\end{tcolorbox}
+{\color{red} How can this protocol can be extended to work for $p \geq 2$ ? }
+\section{Results}
+\label{sec:results}
+
+
+%
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,library}
+
+
+\end{document}
