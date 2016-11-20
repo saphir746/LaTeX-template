@@ -1,0 +1,62 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{anysize}
+\usepackage{multirow}
+%\usepackage{hyperref}
+\usepackage{sidecap}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{comment}
+\usepackage{fancyref} 
+\usepackage{pdflscape}
+\usepackage{geometry}
+\usepackage{epstopdf}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage[titletoc,toc,title]{appendix}
+\usepackage{enumitem}
+\usepackage{titling}
+\usepackage[square]{natbib}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+\pagenumbering{arabic}
+\numberwithin{equation}{section}
+%\usepackage[ampersand]{easylist}
+\def\law{\,{\buildrel d \over \longrightarrow}\,} 
+\def\almostsurely{\,{\buildrel a.s. \over \longrightarrow}\,} 
+\marginsize{1cm}{1cm}{1cm}{1cm}
+%\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{Assumptions}[theorem]{Assumptions}
+\newtheorem{Definition}[theorem]{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{Lemma}[theorem]{Lemma}
+\newlength{\drop} \drop=0.1\textheight
+\newcommand\tr{\mbox{tr}\,}
+\newcommand\fnyq{f_N}
+\newcommand\deter{\mbox{det}\,}
+\newcommand\diag{\mbox{diag}\,}
+\newcommand\cov{\mbox{cov}\,}
+\newcommand\invcov{\mbox{invcov}\,}
+\newcommand{\defeq}{\mathrel{\mathop:}=}
+%\renewcommand{\theenumi}{\Alph{enumi}}
+\renewcommand\abstractname{Summary}
+\linespread{1.3}
+\title{Response to Examiners}
+\subtitle{PhD Thesis - Statistical Approaches to Connectivity Estimation for \\ Multivariate Times Series with Application to EEG Data (2016)}
+\author{ Deborah Schneider-Luftman }
+\date{}
+\begin{document}
+	\maketitle
+	\addcontentsline{toc}{chapter}{References}
+	\bibliographystyle{apalike}
+	\bibliography{library}
+\end{document}
